@@ -66,3 +66,5 @@ const randomizeArt = (a) => {
     }
     return a
 }
+
+//Lazy Loading Goes Here

@@ -25,16 +25,20 @@ fetch( url , {mode: 'cors', headers: {'Access-Control-Allow-Origin': 'https://op
 const parseJson = (json, randomize) => { 
     let array = json.data
     if (randomize == true) array = randomizeArt(array) //randomize data if triggered by randomize button
-    for(let data of array){
-        data = {
-            image: data.images.web.url,
-            title: data.title,
-            culture: data.culture[0],
-            description: data.wall_description ? data.wall_description : '' //replace null description with empty string
+
+    for(let i=0;i<12;i++){
+    let data = array.shift()
+            data = {
+                image: data.images.web.url,
+                title: data.title,
+                culture: data.culture[0],
+                description: data.wall_description ? data.wall_description : '' //replace null description with empty string
+            }
+            displayArt(data.image,data.title,data.culture,data.description)
         }
-        displayArt(data.image,data.title,data.culture,data.description)
     }
-}
+ 
+
 
 const displayArt = (image,title,culture,description) => {
     const container = document.getElementById('container')
@@ -68,3 +72,28 @@ const randomizeArt = (a) => {
 }
 
 //Lazy Loading Goes Here
+const options = {
+    root: document.querySelector('#container'),
+    rootMargin: '0px',
+    threshold: 1.0
+  }
+  let callback = function(entries, observer) { 
+    entries.forEach(entry => {
+        console.log('entry: ', entry);
+        if (entry.intersectionRatio > 0.9) {
+          //entry.target.classList.add('active');
+          parseJson(json,false)
+          observer.unobserve(entry.target);
+        }
+    })
+}
+
+const targetElements = document.querySelectorAll("#artDiv");
+for (let element of targetElements) {
+  // console.log('element: ', element);
+  observer.observe(element);
+}
+  
+let observer = new IntersectionObserver(callback,options);
+
+

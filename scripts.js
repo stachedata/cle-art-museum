@@ -46,7 +46,7 @@ const displayArt = (image,title,culture,description) => {
     const labelOverlay = document.createElement('div')
     artDiv.className = "artDiv"
     labelOverlay.className = "labelOverlay"
-    artDiv.innerHTML = '<img class=artImage src="' + image + '" alt="' + title + '"/>'
+    artDiv.innerHTML = '<img class=artImage src="./images/placeholder.jpeg" data-src="' + image + '" alt="' + title + '"/>'
     labelOverlay.innerHTML = '<div class=artInfo>' + title + '<br>' + culture + '<br><br>' + description
     container.appendChild(artDiv).appendChild(labelOverlay)
     loader.style.display = 'none'
@@ -72,28 +72,36 @@ const randomizeArt = (a) => {
 }
 
 //Lazy Loading Goes Here
-const options = {
-    root: document.querySelector('#container'),
-    rootMargin: '0px',
-    threshold: 1.0
+function loadImage(imageElement) {
+    setTimeout(() => {
+      imageElement.querySelector('img').src = imageElement.querySelector('img').dataset.src
+    }, 1000)
   }
-  let callback = function(entries, observer) { 
+
+
+const options = {
+    root: document.querySelector('container'),
+    rootMargin: '25px',
+    threshold: 1.0
+}
+
+let callback = function(entries, observer) { 
     entries.forEach(entry => {
-        console.log('entry: ', entry);
+        console.log('entry: ', entry)
         if (entry.intersectionRatio > 0.9) {
           //entry.target.classList.add('active');
-          parseJson(json,false)
-          observer.unobserve(entry.target);
+          loadImage(entry.target)
+          observer.unobserve(entry.target)
         }
     })
 }
 
-const targetElements = document.querySelectorAll("#artDiv");
+const targetElements = document.querySelectorAll(".artDiv");
 for (let element of targetElements) {
   // console.log('element: ', element);
-  observer.observe(element);
+  observer.observe(element)
 }
   
-let observer = new IntersectionObserver(callback,options);
+let observer = new IntersectionObserver(callback,options)
 
 

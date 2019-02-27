@@ -72,36 +72,55 @@ const randomizeArt = (a) => {
 }
 
 //Lazy Loading Goes Here
-function loadImage(imageElement) {
-    setTimeout(() => {
-      imageElement.querySelector('img').src = imageElement.querySelector('img').dataset.src
-    }, 1000)
+function loadImage(image) {
+    image.src = image.dataset.src
+    console.log(image.dataset.src)
+    // setTimeout(() => {
+    // }, 1000)
   }
 
 
 const options = {
     root: document.querySelector('container'),
-    rootMargin: '25px',
-    threshold: 1.0
+    rootMargin: '0px',
+    threshold: 0
 }
 
-let callback = function(entries, observer) { 
-    entries.forEach(entry => {
+let callback = function(entries, sel) { 
+    // entries.forEach(entry => {
+    //     console.log('entry: ', entry)
+    //     if (entry.intersectionRatio > 0) {
+    //       //entry.target.classList.add('active');
+    //       console.log(entry.target)
+    //       loadImage(entry.target)
+    //       sel.unobserve(entry.target)
+    //     }
+    // })
+
+    for(let entry of entries){
         console.log('entry: ', entry)
-        if (entry.intersectionRatio > 0.9) {
+        if (entry.intersectionRatio > 0) {
           //entry.target.classList.add('active');
+          console.log(entry.target)
           loadImage(entry.target)
-          observer.unobserve(entry.target)
+          sel.unobserve(entry.target)
         }
-    })
+    }
 }
-
-const targetElements = document.querySelectorAll(".artDiv");
-for (let element of targetElements) {
-  // console.log('element: ', element);
-  observer.observe(element)
-}
-  
 let observer = new IntersectionObserver(callback,options)
+
+
+//const images = document.querySelectorAll('img[data-src]')
+const images = document.getElementsByClassName('artImage')
+console.log("images:",images)
+Array.from(images).forEach(img => {
+        console.log("test",img.alt)
+    observer.observe(img)
+})
+
+// for(let img of images){
+//     observer.observe(img)
+// }
+  
 
 
